@@ -1,0 +1,6 @@
+framework module Pods_MoveCinema {
+  umbrella header "Pods-MoveCinema-umbrella.h"
+
+  export *
+  module * { export * }
+}
