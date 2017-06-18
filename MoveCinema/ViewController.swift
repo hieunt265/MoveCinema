@@ -13,49 +13,32 @@ class ViewController: UIViewController, UITabBarDelegate ,UISearchBarDelegate{
 	@IBOutlet weak var tbvShowMove: UITableView!
 	var url: URL?
 	//@IBOutlet weak var btnCancel: UIButton!
-	@IBOutlet weak var tabBarShow: UITabBar!
 	var dataMove:[NSDictionary]!
 	let refreshControl = UIRefreshControl()
 	let loadingView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
-	
-	
-	@IBOutlet weak var tbrTopRated: UITabBarItem!
-	@IBOutlet weak var btnNowplaying: UITabBarItem!
 	var searchTitleMove = UISearchBar()
-	@IBOutlet weak var btnCancel: UIButton!
-	
 	let viewColor = UIView()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
 		searchTitleMove = UISearchBar(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
-		//searchTitleMove.showsCancelButton = true
 		self.navigationItem.titleView = searchTitleMove
 		searchTitleMove.placeholder = "Enter search your here!"
+		
 		tbvShowMove.delegate = self
 		tbvShowMove.dataSource = self
 		searchTitleMove.delegate = self
-		if (self.tabBarController?.selectedIndex == 0)
-		{
+		
+		if (self.tabBarController?.selectedIndex == 0){
 			self.url = URL(string: APIMove.Default.APIDataMove)
-			waitting()
-			LoadNetwork()
 		}else if(self.tabBarController?.selectedIndex == 1){
-			self.url = URL(string: APIMove.Default.APITopRate)
-			waitting()
-			LoadNetwork()
-		}
+				self.url = URL(string: APIMove.Default.APITopRate)
+			}
+		waitting()
+		LoadNetwork()
 		WaitingData()
 		self.viewColor.backgroundColor = UIColor.darkGray
-		//waitting()
-		//LoadNetwork()
-		// Do any additional setup after loading the view, typically from a nib.
-	}
-	
-	
-	override func didReceiveMemoryWarning() {
-		super.didReceiveMemoryWarning()
-		// Dispose of any resources that can be recreated.
 	}
 	
 	func WaitingData() {
@@ -88,19 +71,14 @@ class ViewController: UIViewController, UITabBarDelegate ,UISearchBarDelegate{
 			case .notReachable:
 				let alertView: UIAlertView = UIAlertView(title: "SORRY", message: " Disconnect to internet", delegate: nil, cancelButtonTitle: "OK")
 				alertView.show()
-				break
 			case .reachableViaWiFi, .reachableViaWWAN:
-				
-					LoadData.Default.fetchData(APIHelp: self.url, Complete:{ (result) in
-						self.dataMove = result
-						self.tbvShowMove.reloadData()
-						self.refreshControl.endRefreshing()
-						self.loadingView.stopAnimating()
-						
-					})
-				//}
-				break
-				
+				LoadData.Default.fetchData(APIHelp: self.url, Complete:{ (result) in
+					self.dataMove = result
+					self.tbvShowMove.reloadData()
+					self.refreshControl.endRefreshing()
+					self.loadingView.stopAnimating()
+					
+				})
 			case .unknown:
 				print("ERROR Internet")
 			}
@@ -118,9 +96,16 @@ class ViewController: UIViewController, UITabBarDelegate ,UISearchBarDelegate{
 			showVC.vote = (dataMove?[indexPath.row].value(forKeyPath: "vote_count") as? Int)!
 			showVC.dateRelease = (dataMove?[indexPath.row].value(forKeyPath: "release_date") as? String)!
 			showVC.overview = (dataMove?[indexPath.row].value(forKeyPath: "overview") as? String)!
-
+			
 		}
 	}
+	
+	override func didReceiveMemoryWarning() {
+		super.didReceiveMemoryWarning()
+		// Dispose of any resources that can be recreated.
+	}
+	
+	
 
 }
 
@@ -139,14 +124,12 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate {
 	}
 	
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell{
-		var imgAPI = String()
 		let cell:CellMove = tbvShowMove.dequeueReusableCell(withIdentifier: "CellMove") as! CellMove
 		cell.selectedBackgroundView = viewColor
 		cell.lbTitle.text = dataMove?[indexPath.row].value(forKeyPath: "title") as? String
 		cell.lbOverview.text = dataMove?[indexPath.row].value(forKeyPath: "overview") as? String
 		
-		if let urlString = dataMove?[indexPath.row].value(forKeyPath: "poster_path") as? String,
-		let url = URL(string: imgAPI + urlString) {
+		if let urlString = dataMove?[indexPath.row].value(forKeyPath: "poster_path") as? String{
 			//cell.imgAvatarMove.setImageWith(url)
 			
 			let smallImageRequest = NSURLRequest(url: URL(string: APIMove.Default.APIImgMoveSlow + urlString)!)

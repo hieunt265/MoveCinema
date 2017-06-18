@@ -34,7 +34,7 @@ class ShowVC: UIViewController {
 		
 		
 		self.scrollViewOverview.contentSize = CGSize(width: self.scrollViewOverview.frame.size.width,height: self.infoView.frame.origin.y + self.infoView.frame.height)
-		
+		self.navigationController?.title = "MovieCinema"
 		self.lbTitle.text = titleMove
 		self.lbVote.text = "Vote : " + String(format : "%i", vote)
 		self.lbDateRelease.text = "Release Date : " + dateRelease
